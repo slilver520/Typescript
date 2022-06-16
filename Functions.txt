@@ -1,0 +1,80 @@
+1. call signatures *****
+const add = (a:number, b:number) => a+b 에서
+(a:number, b:number) => a+b 부분을 call signature라고 함
+
+type Add = (a:number, b:number) => number;
+//타입을 만들거나 함수가 어떻게 작동하는지 서술해둘수 있음
+const add:Add = (a, b) => a + b
+
+
+2. overloading : 함수가 여러개의 call signatures를 가지고 있을때 발생시킴
+
+type Add={
+    (a:number, b:number) : number;
+    (a:number, b:number, c:number) : number;
+}
+
+const add:Add = (a, b, c? : number) => {
+    return a+b;
+}
+add(1, 2)
+add(1, 2, 3)
+
+
+
+3. polymorphism(다양성)
+generic (like a placeholer of type)
+
+<ts에게 이 call signature가 generic을 받는다는것을 알려주는 방법>
+type Ex = {
+    <genericName>(arr: genericName[]):void;
+}
+/*genericName에 보통 T, V로 많이 쓴다고함.
+<T>(arr: T[]): T
+*/
+
+Ex([1, 2, 3, 4])
+Ex([true, false])
+Ex(["a", "b", "c"])
+Ex([1, 2, "c", true])
+
+4. generics 
+/*
+구체적인 타입을 지정하지 않고 다양한 인수와 리턴 값에 대한 타입을 처리할 수 있다.
+타입스크립트에서 제네릭을 통해 인터페이스, 함수 등의 재사용성을 높일 수 있습니다.
+*/
+type Ex = <T, M>(a: T[], b: M) => T
+/*
+===
+function Ex<T>(a: T[]){
+    return a[0]
+}
+*/
+
+const a = Ex([1, 2, 3, 4], "x")
+const b = Ex([true, false], 1)
+/*두번째 arguments가 함수에서 generics으로 되어있다는 것을 알게됨
+ts는 generic을 처음 인색했을 때와 generic의 순서를 기반으로 generic의 타입을 알게됨
+*/
+
+
+type player<Lalala> = {
+    name:string
+    extraInfo:Lalala
+}
+
+const user: player<{favFood:string}> = {
+    name:"user",
+    extraInfo:{
+        favFood:"gum"
+    }
+}
+
+/*extraInfo값이 없을 경우
+
+const visitor: player<null> = {
+    name:"visitor",
+    extraInfo:null
+}
+
+*/
