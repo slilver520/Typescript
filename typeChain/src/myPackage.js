@@ -7,7 +7,7 @@
  * 입력값의 데이터 타입은 object, 입력값의 이름은 config
  * @param {boolean} config.debug
  * @param {string} config.url
- * @returns {boolean}
+ * @returns boolean
  */
 export function init(config){
     return true;
@@ -16,7 +16,7 @@ export function init(config){
 /**
  * exit the program
  * @param {number} code 
- * @returns {number}
+ * @returns number
  */
 export function exit(code){
     return code + 1;
