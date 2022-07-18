@@ -1,5 +1,5 @@
-import { Game } from './Game';
-import 'bootstrap/dist/css/bootstrap';
-import './styles/style.css';
+import 'bootstrap/dist/css/bootstrap'
+import './styles/style.css'
+import { Game } from "./Game";
 
-// new Game();
+const d = new Game();
