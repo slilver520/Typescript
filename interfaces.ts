@@ -181,3 +181,68 @@ class User implements PlayerA {
 
 
 */
+
+
+
+/*vlpt*/
+interface Shape {
+    getArea(): number;
+}
+
+class Circle implements Shape{
+    //implements==Shape의 조건들에 부합한다아
+    constructor(private radius:number){
+    }
+
+    getArea() {
+        return this.radius * this.radius * Math.PI;
+    }
+}
+
+class Rectangle implements Shape {
+
+    constructor(private width:number, private height:number){
+
+    }
+    getArea() {
+        return this.width * this.height;
+    }
+}
+
+const circle = new Circle(5);
+const rectangle = new Rectangle(2, 5);
+
+const shapes: Shape[] = [circle, rectangle];
+
+shapes.forEach(shape => {
+    console.log(shape.getArea())
+})
+
+//-------------------------------------
+//vlpt - 상속 extends
+
+interface Person {
+//type Person = {    
+    name: string;
+    age?: number;
+}
+
+interface Developer extends Person {
+//type Developer = Person & {    
+    skills: string[];
+}
+
+const person: Person = {
+    name:'XXX',
+    age: 10
+}
+const expert: Developer = {
+    name:'EEE',
+    skills:['dfsdfs']
+}
+
+/* 
+대부분의 경우 type alias 사용해도 무방
+라이브러리를 위한 타입을 설정하는 경우에는 interface사용을 권장
+아무튼 일관성있게 써라..type이면 type, interface는 interface만..
+*/
