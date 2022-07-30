@@ -13,6 +13,10 @@
 - [typescript 버전 수정 내역](https://www.typescriptlang.org/docs/handbook/release-notes/overview.html)
 
 ## 실습할 자료 링크(소스 코드 버전에 따라 변동 가능)
+
+https://github.com/microsoft/TypeScript/blob/main/lib/lib.es5.d.ts
+
+
 - [axios](https://github.com/axios/axios/blob/v1.x/index.d.ts)
 - [react](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts)
 - [nodejs](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/node/index.d.ts)
@@ -190,6 +194,8 @@ const c: A = b;
 
 - void 타입은 return값을 사용하지 안 겠다는 뜻(메서드나 매개변수에서는 리턴값 사용 가능)
 ```typescript
+
+//declar : 함수 타입 정의만 여기, 실제 코드는 다른곳에..
 declare function forEach<T>(arr: T[], callback: (el: T) => undefined): void;
 // declare function forEach<T>(arr: T[], callback: (el: T) => void): void;
 let target: number[] = [];
@@ -197,7 +203,7 @@ forEach([1, 2, 3], el => target.push(el));
 
 interface A {
     talk: () => void;
-}
+} 
 const a: A = {
     talk() { return 3; }
 }
@@ -237,13 +243,19 @@ function typeCheck(a: A) {
     a.ddd;
   }
 }
+/*Type Guard*/
+
 
 interface Cat { meow: number }
 interface Dog { bow: number }
 function catOrDog(a: Cat | Dog): a is Dog {
+  //is : custom type guard 함수, if문 안에 쓴다. if문 안의 판별문 잘짜야해
+  //(a 가 Dog 려면)
+  //typeof instanceof in Array.isArray 로 안될정도로 복잡한 경우 사용
   if ((a as Cat).meow) { return false }
   return true;
 }
+//타입을 구분해주는 커스텀함수를 직접 만들 수 있다.
 const cat: Cat | Dog = { meow: 3 }
 if (catOrDog(cat)) {
     console.log(cat.meow);
@@ -269,6 +281,7 @@ interface A {
 - class에 private, protected 추가됨
 ```typescript
 class B implements A {
+  // class (B)는 interface(A)를 구현
   private a: string;
   protected b: string;
 }
@@ -317,6 +330,7 @@ add(1, '2');
 ```
 - 제네릭 기본값, extends
 ```typescript
+//extends : generic 타입을 제한함
 function add<T extends string>(x: T, y: T): T { return x + y }
 add(1, 2);
 add('1', '2')
@@ -327,8 +341,9 @@ add('1', '2')
 // <T extends abstract new (...args: any) => any> // 생성자 타입
 // <T extends keyof any> // string | number | symbol
 ```
-- 함수에서 공변성과 반공변성 주의!
+- 함수에서 공변성과 반공변성 주의!  (//함수간에 대입 할 수 있는지 여부)
 ```typescript
+// 리턴값은 넓은 타입, 매개변수는 좁은 타입으로 대입가능. 
 function a(x: string): number {
   return 0;
 }
@@ -355,6 +370,7 @@ let b: B = a;
 ```
 - 함수 오버로딩
 ```typescript
+//오버로딩 : 같은 타입을 여러번 선언
 function add(x: number, y: number): number
 function add(x: string, y: string): string
 function add(x: any, y: any) {
@@ -365,11 +381,20 @@ interface Add {
   (x: number, y: number): number;
   (x: string, y: string): string;
 }
+class A {
+  add(x: number, y:number): number;
+  add(x: string, y:string): string;
+  add(x:anym, y:any) {
+    return x + y;
+  }
+}
 const add: Add = (x: any, y: any) => x + y;
 ```
 - infer는 타입 내에서 추론된 값으로 다시 새로운 타입을 만드는 것(밑에 utility types 참고).
 - 타입스크립트는 건망증이 심하다
 ```typescript
+
+//interface는 js로 변환시 사라진다. 안 사라지려면 class
 try {
   await axios.get();
 } catch (err) {
@@ -381,12 +406,15 @@ try {
 [링크](https://www.typescriptlang.org/docs/handbook/utility-types.html)
 - Partial
 ```typescript
+//partial :  옵션으로 만들어줌
 type Partial<T> = {
     [P in keyof T]?: T[P];
 };
 ```
 - Required
 ```typescript
+//옵셔널에서 필수로 바꿈
+//- : modifire, 지우기, 반대
 type Required<T> = {
     [P in keyof T]-?: T[P];
 };
@@ -399,12 +427,14 @@ type Readonly<T> = {
 ```
 - Pick
 ```typescript
+//필요한것만 뽑아서
 type Pick<T, K extends keyof T> = {
     [P in K]: T[P];
 };
 ```
 - Record
 ```typescript
+//아무 객체나 
 type Record<K extends keyof any, T> = {
     [P in K]: T;
 };
@@ -419,14 +449,20 @@ type Extract<T, U> = T extends U ? T : never;
 ```
 - Omit
 ```typescript
+//하나 빼고 전부
+//K extends keyof any : K는 string | number | symbol
 type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
 ```
 - NonNullable
 ```typescript
+
 type NonNullable<T> = T extends null | undefined ? never : T;
 ```
 - Parameters
 ```typescript
+//함수의 매개변수(...args: any) 의 타입들 가져오기
+//(...args: any) => any :  함수
+//T extends (...args: any) => any : 함수 제한하는 코드
 type Parameters<T extends (...args: any) => any> = T extends (...args: infer P) => any ? P : never;
 ```
 - ConstructorParameters
@@ -479,7 +515,7 @@ function applyStringMapping(symbol: Symbol, str: string) {
 interface ThisType<T> { }
 ```
 
-# ts 라이브러리 분석
+# ts 라이브러리 분석 팁
 - package.json의 types 속성에 적힌 파일이 메인 타이핑 파일임.
 - npmjs.com에서 패키지를 검색했을 때 패키지 우측에 TS로 뜨면 ts 지원 라이브러리이고, DT로 뜨면 @types를 설치해야 하며, 그것마저도 없으면 직접 타이핑해야 함
 - 첫 번째 줄부터 보기 보다는 마지막 줄 exports default나 export = 부분을 보고 거슬러 올라가는 게 좋음

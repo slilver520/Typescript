@@ -61,7 +61,8 @@ const enum EDirection {
     Right   //3
 }
 
-//  2. as const -타입의 추론 범위를 줄이고 값의 재할당을 막기 위한 목적
+//  2. as const -타입의 추론 범위를 줄이고 값의 재할당을 막기 위한 목적("나는 이 값을 상수로 쓰겠다!")
+//   - js로 변환시 남아있다
 const ODirection = {
     Up: 0,
     Down: 1,
@@ -77,3 +78,26 @@ const ODirection: {
     readonly Right: 3;
 }
 */
+ //enum 사용 대신..
+const a1 = EDirection.Up;
+const c = EDirection.Left;
+
+function walk(dir: EDirection) {};
+
+const obj1 = {a:'123', b:'hello', c:'world'} as const;
+type Key = typeof obj1[keyof typeof obj1];
+
+type Direction = typeof ODirection[keyof typeof ODirection];
+function run(dir:Direction){}
+
+walk(EDirection.Left);
+run(ODirection.Right);
+
+
+
+//객제 타이핑: type과 interface 구분하기
+type A = { a2: string };
+const a2: A = { a2: 'hello' };
+
+interface B { a2: string }
+const b: B = { a2: 'hello' };
